@@ -10,21 +10,40 @@ class RadioView extends ConsumerWidget {
       (ref) => PlayerServiceNotifier(),
     );
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Center(
-          child: Text(
-            'Radio View',
+        Expanded(
+          child: Card(
+            child: ListView(),
           ),
         ),
-        ElevatedButton(
-          onPressed: () async => ref
-              .read(playerService.notifier)
-              .state
-              .play(url: 'http://stream.simulatorradio.com:8002/stream.mp3'),
-          child: Text(
-            'Play',
+        Card(
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async =>
+                        ref.read(playerService.notifier).state.play(
+                              'http://stream.simulatorradio.com:8002/stream.mp3',
+                            ),
+                    child: const Icon(Icons.play_arrow),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async =>
+                        ref.read(playerService.notifier).state.stop(),
+                    child: const Icon(Icons.stop),
+                  ),
+                ],
+              )
+            ],
           ),
-        ),
+        )
       ],
     );
   }
