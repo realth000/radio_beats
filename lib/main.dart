@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'components/navigation_bar/rb_navigation_bar.dart';
+import 'router/router.dart';
 import 'themes/app_theme.dart';
 
 void main() {
@@ -13,11 +15,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => ProviderScope(
-        child: MaterialApp(
+        child: MaterialApp.router(
           title: 'Flutter Demo',
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          home: MyHomePage(title: 'Flutter Demo Home Page'),
+          routerConfig: RBRouter,
         ),
       );
 }
@@ -70,6 +72,7 @@ class MyHomePage extends ConsumerWidget {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: RBNavigationBar(),
     );
   }
 }

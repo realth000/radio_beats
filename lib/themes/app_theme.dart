@@ -50,7 +50,7 @@ class AppTheme {
     tabBarStyle: FlexTabBarStyle.forBackground,
     tooltipsMatchBackground: true,
     subThemesData: const FlexSubThemesData(
-      defaultRadius: 26.0,
+      defaultRadius: 26,
       thickBorderWidth: 1.5,
       inputDecoratorIsFilled: false,
       inputDecoratorBorderType: FlexInputBorderType.underline,
@@ -60,7 +60,7 @@ class AppTheme {
       bottomNavigationBarShowUnselectedLabels: false,
       navigationBarMutedUnselectedLabel: false,
       navigationBarMutedUnselectedIcon: false,
-      navigationBarHeight: 63.0,
+      navigationBarHeight: 63,
       navigationBarLabelBehavior:
           NavigationDestinationLabelBehavior.onlyShowSelected,
       navigationRailMutedUnselectedLabel: false,
