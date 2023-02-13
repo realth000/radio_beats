@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/radio_model.dart';
@@ -25,7 +26,8 @@ class RadioView extends ConsumerWidget {
     return modelList;
   }
 
-  ListTile _buildAudioListTile(RadioModel radioModel) => ListTile(
+  ListTile _buildAudioListTile(RadioModel radioModel, WidgetRef ref) =>
+      ListTile(
         leading: Text(
           radioModel.language ?? '',
           maxLines: 1,
@@ -45,18 +47,43 @@ class RadioView extends ConsumerWidget {
         trailing: PopupMenuButton(
           itemBuilder: (context) => <PopupMenuItem<int>>[
             PopupMenuItem(
-              child: TextButton.icon(
-                icon: Icon(Icons.play_arrow),
-                label: Text('Play'),
-                onPressed: () {},
-              ),
               value: 0,
+              child: Row(
+                children: const [
+                  Icon(Icons.play_arrow),
+                  Text('Play'),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 1,
+              child: Row(
+                children: const [
+                  Icon(Icons.copy),
+                  Text('Copy url'),
+                ],
+              ),
             ),
           ],
+          onSelected: (value) async {
+            // TODO: Reduce these too many refs.
+            print('AAAA call onSelected');
+            switch (value) {
+              case 0:
+                await ref
+                    .watch(playerServiceProvider.notifier)
+                    .state
+                    .play(radioModel.url);
+                return;
+              case 1:
+                await Clipboard.setData(ClipboardData(text: radioModel.url));
+                return;
+            }
+          },
         ),
       );
 
-  Future<Widget> _buildRadioList(BuildContext context) async {
+  Future<Widget> _buildRadioList(BuildContext context, WidgetRef ref) async {
     final defaultRadioLists = _buildDefaultRadioList(
       await DefaultAssetBundle.of(context)
           .loadString('assets/default_radio.txt'),
@@ -66,62 +93,60 @@ class RadioView extends ConsumerWidget {
       itemExtent: 60,
       itemBuilder: (context, index) => _buildAudioListTile(
         defaultRadioLists[index],
+        ref,
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final playerService = StateProvider(
-      (ref) => PlayerServiceNotifier(),
-    );
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: Card(
-            child: FutureBuilder(
-              future: _buildRadioList(context),
-              builder: (context, snapshot) {
-                if (snapshot.hasError ||
-                    !snapshot.hasData ||
-                    snapshot.data == null) {
-                  return ListView();
-                } else {
-                  return snapshot.data!;
-                }
-              },
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: Card(
+              child: FutureBuilder(
+                future: _buildRadioList(context, ref),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      snapshot.data == null) {
+                    return ListView();
+                  } else {
+                    return snapshot.data!;
+                  }
+                },
+              ),
             ),
           ),
-        ),
-        Card(
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async =>
-                        ref.read(playerService.notifier).state.play(
-                              'http://stream.simulatorradio.com:8002/stream.mp3',
-                            ),
-                    child: const Icon(Icons.play_arrow),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async =>
-                        ref.read(playerService.notifier).state.stop(),
-                    child: const Icon(Icons.stop),
-                  ),
-                ],
-              )
-            ],
-          ),
-        )
-      ],
-    );
-  }
+          Card(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async =>
+                          ref.watch(playerServiceProvider.notifier).state.play(
+                                'http://stream.simulatorradio.com:8002/stream.mp3',
+                              ),
+                      child: const Icon(Icons.play_arrow),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () async => ref
+                          .watch(playerServiceProvider.notifier)
+                          .state
+                          .stop(),
+                      child: const Icon(Icons.stop),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      );
 }
