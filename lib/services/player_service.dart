@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:radio_beats/services/player_service_background.dart';
 
+import '../models/radio_model.dart';
 import '../utils/platform.dart';
 
 late final AudioHandler _audioHandler;
@@ -19,23 +20,26 @@ Future<void> initAudioBackgroundService() async {
 }
 
 class PlayerService {
+  RadioModel? currentRadio;
+
   final _player = AudioPlayer();
 
-  Future<void> play(String url) async {
+  Future<void> play(RadioModel radioModel) async {
     if (_player.state == PlayerState.playing) {
       await _player.stop();
     }
-    await _player.play(UrlSource(url));
+    await _player.play(UrlSource(radioModel.url));
     if (isAndroid) {
-      final item = MediaItem(
-        id: 'https://example.com/audio.mp3',
-        album: 'Album name',
-        title: 'Track title',
-        artist: 'Artist name',
-        duration: const Duration(milliseconds: 123456),
-        artUri: Uri.parse('https://example.com/album.jpg'),
+      await _audioHandler.playMediaItem(
+        MediaItem(
+          id: radioModel.url,
+          //album: 'Album name',
+          title: radioModel.name,
+          //artist: radioModel.name,
+          //duration: const Duration(milliseconds: 123456),
+          //artUri: Uri.parse('https://example.com/album.jpg'),
+        ),
       );
-      await _audioHandler.play();
     }
   }
 

@@ -70,10 +70,12 @@ class RadioView extends ConsumerWidget {
             print('AAAA call onSelected');
             switch (value) {
               case 0:
+                ref.watch(playerServiceProvider.notifier).state.currentRadio =
+                    radioModel;
                 await ref
                     .watch(playerServiceProvider.notifier)
                     .state
-                    .play(radioModel.url);
+                    .play(radioModel);
                 return;
               case 1:
                 await Clipboard.setData(ClipboardData(text: radioModel.url));
@@ -125,10 +127,19 @@ class RadioView extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () async =>
-                          ref.watch(playerServiceProvider.notifier).state.play(
-                                'http://stream.simulatorradio.com:8002/stream.mp3',
-                              ),
+                      onPressed: () async {
+                        final r = ref
+                            .watch(playerServiceProvider.notifier)
+                            .state
+                            .currentRadio;
+                        if (r == null) {
+                          return;
+                        }
+                        await ref
+                            .watch(playerServiceProvider.notifier)
+                            .state
+                            .play(r);
+                      },
                       child: const Icon(Icons.play_arrow),
                     ),
                     const SizedBox(
