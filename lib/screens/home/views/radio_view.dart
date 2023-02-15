@@ -28,6 +28,7 @@ class RadioView extends ConsumerWidget {
 
   ListTile _buildAudioListTile(RadioModel radioModel, WidgetRef ref) =>
       ListTile(
+        horizontalTitleGap: 10,
         leading: Text(
           radioModel.language ?? '',
           maxLines: 1,
@@ -43,6 +44,8 @@ class RadioView extends ConsumerWidget {
         subtitle: Text(
           radioModel.url,
           maxLines: 1,
+          overflow: TextOverflow.fade,
+          softWrap: false,
         ),
         trailing: PopupMenuButton(
           itemBuilder: (context) => <PopupMenuItem<int>>[
