@@ -3,9 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/radio_model.dart';
-import '../../../services/player_service.dart';
+import '../../../provider/player_provider.dart';
 
 class RadioView extends ConsumerWidget {
+  Widget buildSmallSpace() => const SizedBox(
+        width: 10,
+        height: 10,
+      );
+
   List<RadioModel> _buildDefaultRadioList(String str) {
     final modelList = <RadioModel>[];
     str.split('\n').forEach((s) {
@@ -73,12 +78,9 @@ class RadioView extends ConsumerWidget {
             print('AAAA call onSelected');
             switch (value) {
               case 0:
-                ref.watch(playerServiceProvider.notifier).state.currentRadio =
+                ref.watch(playerProvider.notifier).state.currentRadio =
                     radioModel;
-                await ref
-                    .watch(playerServiceProvider.notifier)
-                    .state
-                    .play(radioModel);
+                await ref.watch(playerProvider.notifier).state.play(radioModel);
                 return;
               case 1:
                 await Clipboard.setData(ClipboardData(text: radioModel.url));
@@ -132,30 +134,23 @@ class RadioView extends ConsumerWidget {
                     ElevatedButton(
                       onPressed: () async {
                         final r = ref
-                            .watch(playerServiceProvider.notifier)
+                            .watch(playerProvider.notifier)
                             .state
                             .currentRadio;
                         if (r == null) {
                           return;
                         }
-                        await ref
-                            .watch(playerServiceProvider.notifier)
-                            .state
-                            .play(r);
+                        await ref.watch(playerProvider.notifier).state.play(r);
                       },
                       child: const Icon(Icons.play_arrow),
                     ),
-                    const SizedBox(
-                      width: 10,
-                      height: 10,
-                    ),
+                    buildSmallSpace(),
                     ElevatedButton(
-                      onPressed: () async => ref
-                          .watch(playerServiceProvider.notifier)
-                          .state
-                          .stop(),
+                      onPressed: () async =>
+                          ref.watch(playerProvider.notifier).state.stop(),
                       child: const Icon(Icons.stop),
                     ),
+                    buildSmallSpace(),
                   ],
                 )
               ],

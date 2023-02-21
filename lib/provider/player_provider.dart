@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/radio_model.dart';
 import '../utils/platform.dart';
-import 'player_service_background.dart';
+import 'player_background_provider.dart';
 
 late final RBAudioHandler _audioHandler;
 
@@ -20,9 +20,9 @@ Future<void> initAudioBackgroundService() async {
   );
 }
 
-class PlayerService {
+class Player {
   /// Constructor.
-  PlayerService() {
+  Player() {
     if (isAndroid) {
       _player.onPlayerStateChanged.listen((state) async {
         print('AAAA register state change！');
@@ -86,12 +86,11 @@ class PlayerService {
   }
 }
 
-class _PlayerServiceNotifier extends StateNotifier<PlayerService> {
+class _PlayerNotifier extends StateNotifier<Player> {
   /// Constructor.
-  _PlayerServiceNotifier() : super(PlayerService());
+  _PlayerNotifier() : super(Player());
 }
 
-final playerServiceProvider =
-    StateNotifierProvider<_PlayerServiceNotifier, PlayerService>(
-  (ref) => _PlayerServiceNotifier(),
+final playerProvider = StateNotifierProvider<_PlayerNotifier, Player>(
+  (ref) => _PlayerNotifier(),
 );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'router/router.dart';
-import 'services/player_service.dart';
+import 'provider/player_provider.dart';
 import 'themes/app_theme.dart';
 import 'utils/platform.dart';
 
