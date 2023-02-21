@@ -4,8 +4,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/radio_model.dart';
 import '../../../provider/player_provider.dart';
+import '../../../provider/settings_provider.dart';
 
-class RadioView extends ConsumerWidget {
+class RadioView extends ConsumerStatefulWidget {
+  /// Constructor.
+  const RadioView({super.key});
+
+  @override
+  ConsumerState<RadioView> createState() => _RadioViewState();
+}
+
+class _RadioViewState extends ConsumerState<RadioView> {
   Widget buildSmallSpace() => const SizedBox(
         width: 10,
         height: 10,
@@ -31,64 +40,65 @@ class RadioView extends ConsumerWidget {
     return modelList;
   }
 
-  ListTile _buildAudioListTile(RadioModel radioModel, WidgetRef ref) =>
-      ListTile(
-        horizontalTitleGap: 10,
-        leading: Text(
-          radioModel.language ?? '',
-          maxLines: 1,
-          style: const TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.w600,
+  ListTile _buildAudioListTile(RadioModel radioModel, WidgetRef ref) {
+    final player = ref.watch(playerProvider);
+    return ListTile(
+      horizontalTitleGap: 10,
+      leading: Text(
+        radioModel.language ?? '',
+        maxLines: 1,
+        style: const TextStyle(
+          fontSize: 21,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      title: Text(
+        radioModel.name,
+        maxLines: 1,
+      ),
+      subtitle: Text(
+        radioModel.url,
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ),
+      trailing: PopupMenuButton(
+        itemBuilder: (context) => <PopupMenuItem<int>>[
+          PopupMenuItem(
+            value: 0,
+            child: Row(
+              children: const [
+                Icon(Icons.play_arrow),
+                Text('Play'),
+              ],
+            ),
           ),
-        ),
-        title: Text(
-          radioModel.name,
-          maxLines: 1,
-        ),
-        subtitle: Text(
-          radioModel.url,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => <PopupMenuItem<int>>[
-            PopupMenuItem(
-              value: 0,
-              child: Row(
-                children: const [
-                  Icon(Icons.play_arrow),
-                  Text('Play'),
-                ],
-              ),
+          PopupMenuItem(
+            value: 1,
+            child: Row(
+              children: const [
+                Icon(Icons.copy),
+                Text('Copy url'),
+              ],
             ),
-            PopupMenuItem(
-              value: 1,
-              child: Row(
-                children: const [
-                  Icon(Icons.copy),
-                  Text('Copy url'),
-                ],
-              ),
-            ),
-          ],
-          onSelected: (value) async {
-            // TODO: Reduce these too many refs.
-            print('AAAA call onSelected');
-            switch (value) {
-              case 0:
-                ref.watch(playerProvider.notifier).state.currentRadio =
-                    radioModel;
-                await ref.watch(playerProvider.notifier).state.play(radioModel);
-                return;
-              case 1:
-                await Clipboard.setData(ClipboardData(text: radioModel.url));
-                return;
-            }
-          },
-        ),
-      );
+          ),
+        ],
+        onSelected: (value) async {
+          // TODO: Reduce these too many refs.
+          print('AAAA call onSelected');
+          switch (value) {
+            case 0:
+              player.currentRadio = radioModel;
+              await player.play(radioModel);
+              return;
+            case 1:
+              await Clipboard.setData(ClipboardData(text: radioModel.url));
+              return;
+          }
+        },
+      ),
+    );
+  }
 
   Future<Widget> _buildRadioList(BuildContext context, WidgetRef ref) async {
     final defaultRadioLists = _buildDefaultRadioList(
@@ -106,56 +116,71 @@ class RadioView extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            child: Card(
-              child: FutureBuilder(
-                future: _buildRadioList(context, ref),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError ||
-                      !snapshot.hasData ||
-                      snapshot.data == null) {
-                    return ListView();
-                  } else {
-                    return snapshot.data!;
-                  }
-                },
-              ),
+  Widget build(BuildContext context) {
+    final player = ref.watch(playerProvider);
+    final settings = ref.watch(settingsProvider);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Card(
+            child: FutureBuilder(
+              future: _buildRadioList(context, ref),
+              builder: (context, snapshot) {
+                if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data == null) {
+                  return ListView();
+                } else {
+                  return snapshot.data!;
+                }
+              },
             ),
           ),
-          Card(
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        final r = ref
-                            .watch(playerProvider.notifier)
+        ),
+        Card(
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final r = player.currentRadio;
+                      if (r == null) {
+                        return;
+                      }
+                      await player.play(r);
+                    },
+                    child: const Icon(Icons.play_arrow),
+                  ),
+                  buildSmallSpace(),
+                  ElevatedButton(
+                    onPressed: () async => player.stop(),
+                    child: const Icon(Icons.stop),
+                  ),
+                  buildSmallSpace(),
+                  Consumer(
+                    builder: (context, ref, _) => Slider(
+                      // value: ref.read(settingsProvider).volume,
+                      value: settings.volume,
+                      onChanged: (value) async {
+                        await ref
+                            .read(playerProvider.notifier)
                             .state
-                            .currentRadio;
-                        if (r == null) {
-                          return;
-                        }
-                        await ref.watch(playerProvider.notifier).state.play(r);
+                            .setVolume(value);
+                        await ref
+                            .read(settingsProvider.notifier)
+                            .setVolume(value);
                       },
-                      child: const Icon(Icons.play_arrow),
                     ),
-                    buildSmallSpace(),
-                    ElevatedButton(
-                      onPressed: () async =>
-                          ref.watch(playerProvider.notifier).state.stop(),
-                      child: const Icon(Icons.stop),
-                    ),
-                    buildSmallSpace(),
-                  ],
-                )
-              ],
-            ),
-          )
-        ],
-      );
+                  ),
+                ],
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
 }

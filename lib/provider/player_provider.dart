@@ -84,6 +84,10 @@ class Player {
     print('AAAA player service stop!');
     await _player.stop();
   }
+
+  Future<void> setVolume(double volume) async {
+    await _player.setVolume(volume);
+  }
 }
 
 class _PlayerNotifier extends StateNotifier<Player> {
