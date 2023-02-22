@@ -39,6 +39,10 @@ class AppTheme {
     swapLegacyOnMaterial3: true,
     // To use the playground font, add GoogleFonts package and uncomment
     // fontFamily: GoogleFonts.notoSans().fontFamily,
+  ).copyWith(
+    sliderTheme: SliderThemeData(
+      overlayShape: SliderComponentShape.noOverlay,
+    ),
   );
 
   /// App dark theme.
@@ -77,5 +81,9 @@ class AppTheme {
     swapLegacyOnMaterial3: true,
     // To use the Playground font, add GoogleFonts package and uncomment
     // fontFamily: GoogleFonts.notoSans().fontFamily,
+  ).copyWith(
+    sliderTheme: SliderThemeData(
+      overlayShape: SliderComponentShape.noOverlay,
+    ),
   );
 }
