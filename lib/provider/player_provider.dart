@@ -25,7 +25,6 @@ class Player {
   Player() {
     if (isAndroid) {
       _player.onPlayerStateChanged.listen((state) async {
-        print('AAAA register state change！');
         _audioHandler.playbackState.add(await _transformEvent(state));
       });
     }
@@ -57,14 +56,21 @@ class Player {
         bufferedPosition: await _player.getDuration() ?? Duration.zero,
         queueIndex: 0,
       );
+}
+
+class _PlayerNotifier extends StateNotifier<Player> {
+  /// Constructor.
+  _PlayerNotifier() : super(Player());
+  Future<void> setVolume(double volume) async {
+    await state._player.setVolume(volume);
+  }
 
   Future<void> play(RadioModel radioModel) async {
-    print('AAAA player service start!');
-    if (_player.state == PlayerState.playing) {
-      await _player.stop();
+    if (state._player.state == PlayerState.playing) {
+      await state._player.stop();
     }
-    currentRadio = radioModel;
-    await _player.play(UrlSource(radioModel.url));
+    state.currentRadio = radioModel;
+    await state._player.play(UrlSource(radioModel.url));
     if (isAndroid) {
       print('AAAA set playMediaItem');
       await _audioHandler.playMediaItem(
@@ -82,17 +88,8 @@ class Player {
 
   Future<void> stop() async {
     print('AAAA player service stop!');
-    await _player.stop();
+    await state._player.stop();
   }
-
-  Future<void> setVolume(double volume) async {
-    await _player.setVolume(volume);
-  }
-}
-
-class _PlayerNotifier extends StateNotifier<Player> {
-  /// Constructor.
-  _PlayerNotifier() : super(Player());
 }
 
 final playerProvider = StateNotifierProvider<_PlayerNotifier, Player>(

@@ -102,7 +102,7 @@ class _RadioViewState extends ConsumerState<RadioView> {
           switch (value) {
             case 0:
               player.currentRadio = radioModel;
-              await player.play(radioModel);
+              await ref.read(playerProvider.notifier).play(radioModel);
               return;
             case 1:
               await Clipboard.setData(ClipboardData(text: radioModel.url));
@@ -144,14 +144,36 @@ class _RadioViewState extends ConsumerState<RadioView> {
                   if (r == null) {
                     return;
                   }
-                  await player.play(r);
+                  await ref.read(playerProvider.notifier).play(r);
                 },
                 child: const Icon(Icons.play_arrow),
               ),
               buildSmallSpace(),
               ElevatedButton(
-                onPressed: () async => player.stop(),
+                onPressed: () async => ref.read(playerProvider.notifier).stop(),
                 child: const Icon(Icons.stop),
+              ),
+              buildSmallSpace(),
+              IconButton(
+                icon: _buildVolumeButton(ref),
+                onPressed: () async {
+                  if (settings.volume == 0) {
+                    await ref
+                        .watch(settingsProvider.notifier)
+                        .setVolume(settings.lastNotZeroVolume);
+                    await ref
+                        .watch(playerProvider.notifier)
+                        .setVolume(settings.lastNotZeroVolume);
+                  } else {
+                    // Save volume.
+                    await ref
+                        .watch(settingsProvider.notifier)
+                        .setLastNotZeroVolume(settings.volume);
+                    // Mute.
+                    await ref.watch(settingsProvider.notifier).setVolume(0);
+                    await ref.watch(playerProvider.notifier).setVolume(0);
+                  }
+                },
               ),
               buildSmallSpace(),
               Consumer(
@@ -159,10 +181,7 @@ class _RadioViewState extends ConsumerState<RadioView> {
                   // value: ref.read(settingsProvider).volume,
                   value: settings.volume,
                   onChanged: (value) async {
-                    await ref
-                        .read(playerProvider.notifier)
-                        .state
-                        .setVolume(value);
+                    await ref.read(playerProvider.notifier).setVolume(value);
                     await ref.read(settingsProvider.notifier).setVolume(value);
                   },
                 ),
@@ -172,6 +191,17 @@ class _RadioViewState extends ConsumerState<RadioView> {
         ],
       ),
     );
+  }
+
+  Widget _buildVolumeButton(WidgetRef ref) {
+    final settings = ref.read(settingsProvider);
+    if (settings.volume == 0) {
+      return const Icon(Icons.volume_mute);
+    }
+    if (settings.volume < 0.3) {
+      return const Icon(Icons.volume_down);
+    }
+    return const Icon(Icons.volume_up);
   }
 
   @override

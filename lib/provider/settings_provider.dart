@@ -91,12 +91,22 @@ class SettingsNotifier extends StateNotifier<Settings> {
   SettingsNotifier()
       : super(
           Settings(
-            volume: _storage.get('volume') ?? 0.5,
+            volume: _storage.getDouble('volume') ?? _defaultVolume,
+            lastNotZeroVolume: _storage.getDouble('lastNotZeroVolume') ??
+                _defaultLastNotZeroVolume,
           ),
         );
+
+  static const _defaultVolume = 0.5;
+  static const _defaultLastNotZeroVolume = _defaultVolume;
 
   Future<void> setVolume(double volume) async {
     state = state.copyWith(volume: volume);
     await _storage.saveDouble('volume', volume);
+  }
+
+  Future<void> setLastNotZeroVolume(double volume) async {
+    state = state.copyWith(lastNotZeroVolume: volume);
+    await _storage.saveDouble('lastNotZeroVolume', volume);
   }
 }

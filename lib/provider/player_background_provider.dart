@@ -18,13 +18,13 @@ class RBAudioHandler extends BaseAudioHandler with QueueHandler {
       print('AAAA handler play NULL!');
       return;
     }
-    await playerContainer.read(playerProvider.notifier).state.play(r);
+    await playerContainer.read(playerProvider.notifier).play(r);
   }
 
   @override
   Future<void> stop() async {
     print('AAAA handler stop!');
-    await playerContainer.read(playerProvider.notifier).state.stop();
+    await playerContainer.read(playerProvider.notifier).stop();
   }
 
   @override
