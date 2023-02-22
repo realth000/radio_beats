@@ -1,27 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Settings {
-  /// Default constructor.
-  Settings();
+part 'settings_model.freezed.dart';
 
-  /// Constructor from raw value
-  Settings.raw({
-    required this.volume,
-  });
-
-  /// Player volume.
-  double volume = 0.5;
-
-  Map<String, dynamic> get toMap => <String, dynamic>{
-        'volume': volume,
-      };
-
-  /// Copy with another
-  Settings copyWith({
-    double? volume,
-  }) =>
-      Settings.raw(
-        volume: volume ?? this.volume,
-      );
+/// Settings model for app, also used in storage.
+@freezed
+class Settings with _$Settings {
+  /// Constructor.
+  const factory Settings({
+    required double volume,
+  }) = _Settings;
 }

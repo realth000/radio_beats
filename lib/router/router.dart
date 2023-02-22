@@ -4,7 +4,7 @@ import '../screens/home/home_screen.dart';
 
 final _homeRoute = GoRoute(
   path: '/',
-  builder: (context, state) => HomeScreen(),
+  builder: (context, state) => const HomeScreen(),
 );
 
 final RBRouter = GoRouter(

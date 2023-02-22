@@ -11,9 +11,14 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, Settings>(
 /// Notifier for settings.
 class SettingsNotifier extends StateNotifier<Settings> {
   /// Constructor.
-  SettingsNotifier() : super(Settings());
+  SettingsNotifier()
+      : super(
+          Settings(
+            volume: 0.5,
+          ),
+        );
 
-  final _box = Hive.box('settings');
+  static final _box = Hive.box('settings');
 
   /// Save value of key to storage.
   Future<bool> save(String key, dynamic value) async {
