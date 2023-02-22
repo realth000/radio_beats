@@ -1,4 +1,4 @@
-package kzs.th000.radio_beats.radio_beats
+package kzs.th000.radio_beats
 
 import io.flutter.embedding.android.FlutterActivity
 
