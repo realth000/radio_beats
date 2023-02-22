@@ -15,7 +15,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
         appBar: AppBar(),
         body: IndexedStack(
-          index: ref.watch(homepageProvider),
+          index: ref.watch(homepageIndexProvider),
           children: [
             const RadioView(),
             SettingsView(),

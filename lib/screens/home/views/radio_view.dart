@@ -15,6 +15,21 @@ class RadioView extends ConsumerStatefulWidget {
 }
 
 class _RadioViewState extends ConsumerState<RadioView> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _radioListScrollController.dispose();
+    super.dispose();
+  }
+
+  final _radioListScrollController = ScrollController(
+    keepScrollOffset: true,
+  );
+
   Widget buildSmallSpace() => const SizedBox(
         width: 10,
         height: 10,
@@ -84,8 +99,6 @@ class _RadioViewState extends ConsumerState<RadioView> {
           ),
         ],
         onSelected: (value) async {
-          // TODO: Reduce these too many refs.
-          print('AAAA call onSelected');
           switch (value) {
             case 0:
               player.currentRadio = radioModel;
@@ -106,6 +119,7 @@ class _RadioViewState extends ConsumerState<RadioView> {
           .loadString('assets/default_radio.txt'),
     );
     return ListView.builder(
+      controller: _radioListScrollController,
       itemCount: defaultRadioLists.length,
       itemExtent: 60,
       itemBuilder: (context, index) => _buildAudioListTile(
@@ -115,72 +129,72 @@ class _RadioViewState extends ConsumerState<RadioView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildControlCard() {
     final player = ref.watch(playerProvider);
     final settings = ref.watch(settingsProvider);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: Card(
-            child: FutureBuilder(
-              future: _buildRadioList(context, ref),
-              builder: (context, snapshot) {
-                if (snapshot.hasError ||
-                    !snapshot.hasData ||
-                    snapshot.data == null) {
-                  return ListView();
-                } else {
-                  return snapshot.data!;
-                }
-              },
-            ),
-          ),
-        ),
-        Card(
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final r = player.currentRadio;
-                      if (r == null) {
-                        return;
-                      }
-                      await player.play(r);
-                    },
-                    child: const Icon(Icons.play_arrow),
-                  ),
-                  buildSmallSpace(),
-                  ElevatedButton(
-                    onPressed: () async => player.stop(),
-                    child: const Icon(Icons.stop),
-                  ),
-                  buildSmallSpace(),
-                  Consumer(
-                    builder: (context, ref, _) => Slider(
-                      // value: ref.read(settingsProvider).volume,
-                      value: settings.volume,
-                      onChanged: (value) async {
-                        await ref
-                            .read(playerProvider.notifier)
-                            .state
-                            .setVolume(value);
-                        await ref
-                            .read(settingsProvider.notifier)
-                            .setVolume(value);
-                      },
-                    ),
-                  ),
-                ],
-              )
+    return Card(
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final r = player.currentRadio;
+                  if (r == null) {
+                    return;
+                  }
+                  await player.play(r);
+                },
+                child: const Icon(Icons.play_arrow),
+              ),
+              buildSmallSpace(),
+              ElevatedButton(
+                onPressed: () async => player.stop(),
+                child: const Icon(Icons.stop),
+              ),
+              buildSmallSpace(),
+              Consumer(
+                builder: (context, ref, _) => Slider(
+                  // value: ref.read(settingsProvider).volume,
+                  value: settings.volume,
+                  onChanged: (value) async {
+                    await ref
+                        .read(playerProvider.notifier)
+                        .state
+                        .setVolume(value);
+                    await ref.read(settingsProvider.notifier).setVolume(value);
+                  },
+                ),
+              ),
             ],
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) => Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: Card(
+              child: FutureBuilder(
+                future: _buildRadioList(context, ref),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      snapshot.data == null) {
+                    return ListView();
+                  } else {
+                    return snapshot.data!;
+                  }
+                },
+              ),
+            ),
+          ),
+          _buildControlCard(),
+        ],
+      );
 }

@@ -20,9 +20,9 @@ class RBNavigationBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Consumer(
         builder: (context, ref, _) => BottomNavigationBar(
           items: dest,
-          currentIndex: ref.watch(homepageProvider),
+          currentIndex: ref.watch(homepageIndexProvider),
           onTap: (i) {
-            ref.read(homepageProvider.notifier).state = i;
+            ref.read(homepageIndexProvider.notifier).state = i;
           },
         ),
       );
