@@ -10,3 +10,8 @@ class Settings with _$Settings {
     required double volume,
   }) = _Settings;
 }
+
+/// All settings and value types.
+const Map<String, Type> settingsMap = <String, Type>{
+  'volume': double,
+};

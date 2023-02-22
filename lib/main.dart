@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'provider/player_provider.dart';
+import 'provider/settings_provider.dart';
 import 'router/router.dart';
 import 'themes/app_theme.dart';
 import 'utils/platform.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  final settinsBox = await Hive.openBox('settings');
-  // if (settinsBox.isEmpty) {
-  //   await settinsBox.putAll(Settings().toMap);
-  // } else {}
-
+  await initSettings();
   if (isAndroid) {
     await initAudioBackgroundService();
   }
