@@ -8,6 +8,7 @@ import 'themes/app_theme.dart';
 import 'utils/platform.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initSettings();
   if (isAndroid) {
     await initAudioBackgroundService();
