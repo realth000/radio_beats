@@ -9,6 +9,11 @@ class Settings with _$Settings {
   const factory Settings({
     required double volume,
     required double lastNotZeroVolume,
+    required double windowWidth,
+    required double windowHeight,
+    required double windowPositionDx,
+    required double windowPositionDy,
+    required bool windowInCenter,
   }) = _Settings;
 }
 
@@ -16,4 +21,9 @@ class Settings with _$Settings {
 const Map<String, Type> settingsMap = <String, Type>{
   'volume': double,
   'lastNotZeroVolume': double,
+  'windowWidth': double,
+  'windowHeight': double,
+  'windowPositionDx': double,
+  'windowPositionDy': double,
+  'windowInCenter': bool,
 };

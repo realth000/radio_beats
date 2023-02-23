@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,11 +96,26 @@ class SettingsNotifier extends StateNotifier<Settings> {
             volume: _storage.getDouble('volume') ?? _defaultVolume,
             lastNotZeroVolume: _storage.getDouble('lastNotZeroVolume') ??
                 _defaultLastNotZeroVolume,
+            windowWidth:
+                _storage.getDouble('windowWidth') ?? _defaultWindowWidth,
+            windowHeight:
+                _storage.getDouble('windowHeight') ?? _defaultWindowHeight,
+            windowPositionDx: _storage.getDouble('windowPositionDx') ??
+                _defaultWindowPositionDx,
+            windowPositionDy: _storage.getDouble('windowPositionDy') ??
+                _defaultWindowPositionDy,
+            windowInCenter:
+                _storage.getBool('windowInCenter') ?? _defaultWindowInCenter,
           ),
         );
 
   static const _defaultVolume = 0.5;
   static const _defaultLastNotZeroVolume = _defaultVolume;
+  static const _defaultWindowPositionDx = 0.0;
+  static const _defaultWindowPositionDy = 0.0;
+  static const _defaultWindowWidth = 600.0;
+  static const _defaultWindowHeight = 480.0;
+  static const _defaultWindowInCenter = false;
 
   Future<void> setVolume(double volume) async {
     state = state.copyWith(volume: volume);
@@ -108,5 +125,23 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setLastNotZeroVolume(double volume) async {
     state = state.copyWith(lastNotZeroVolume: volume);
     await _storage.saveDouble('lastNotZeroVolume', volume);
+  }
+
+  Future<void> setWindowSize(Size size) async {
+    await _storage.saveDouble('windowWidth', size.width);
+    await _storage.saveDouble('windowHeight', size.height);
+    state = state.copyWith(
+      windowPositionDx: size.width,
+      windowPositionDy: size.height,
+    );
+  }
+
+  Future<void> setWindowPosition(Offset offset) async {
+    await _storage.saveDouble('windowPositionDx', offset.dx);
+    await _storage.saveDouble('windowPositionDy', offset.dy);
+    state = state.copyWith(
+      windowPositionDx: offset.dx,
+      windowPositionDy: offset.dy,
+    );
   }
 }
