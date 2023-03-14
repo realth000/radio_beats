@@ -26,9 +26,7 @@ class _RadioViewState extends ConsumerState<RadioView> {
     super.dispose();
   }
 
-  final _radioListScrollController = ScrollController(
-    keepScrollOffset: true,
-  );
+  final _radioListScrollController = ScrollController();
 
   Widget buildSmallSpace() => const SizedBox(
         width: 10,

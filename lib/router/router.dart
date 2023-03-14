@@ -7,7 +7,8 @@ final _homeRoute = GoRoute(
   builder: (context, state) => const HomeScreen(),
 );
 
-final RBRouter = GoRouter(
+/// App router.
+final rbRouter = GoRouter(
   routes: [
     _homeRoute,
   ],

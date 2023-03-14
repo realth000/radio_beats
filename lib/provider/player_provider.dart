@@ -20,6 +20,7 @@ Future<void> initAudioBackgroundService() async {
   );
 }
 
+/// Music player class.
 class Player {
   /// Constructor.
   Player() {
@@ -30,6 +31,7 @@ class Player {
     }
   }
 
+  /// Current radio model.
   RadioModel? currentRadio;
 
   final _player = AudioPlayer();
@@ -92,6 +94,7 @@ class _PlayerNotifier extends StateNotifier<Player> {
   }
 }
 
+/// Global provider os [Player].
 final playerProvider = StateNotifierProvider<_PlayerNotifier, Player>(
   (ref) => _PlayerNotifier(),
 );

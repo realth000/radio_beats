@@ -30,10 +30,10 @@ class RadioBeatsApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => ProviderScope(
         child: MaterialApp.router(
-          title: 'Flutter Demo',
+          title: 'RadioBeats',
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          routerConfig: RBRouter,
+          routerConfig: rbRouter,
         ),
       );
 }

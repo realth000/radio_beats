@@ -117,16 +117,22 @@ class SettingsNotifier extends StateNotifier<Settings> {
   static const _defaultWindowHeight = 480.0;
   static const _defaultWindowInCenter = false;
 
+  /// Set volume value, not less than zero.
   Future<void> setVolume(double volume) async {
     state = state.copyWith(volume: volume);
     await _storage.saveDouble('volume', volume);
   }
 
+  /// Set last not zero value, greater than zero.
   Future<void> setLastNotZeroVolume(double volume) async {
+    if (volume == 0) {
+      return;
+    }
     state = state.copyWith(lastNotZeroVolume: volume);
     await _storage.saveDouble('lastNotZeroVolume', volume);
   }
 
+  /// Set window size, greater than zero.
   Future<void> setWindowSize(Size size) async {
     await _storage.saveDouble('windowWidth', size.width);
     await _storage.saveDouble('windowHeight', size.height);
@@ -136,6 +142,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
     );
   }
 
+  /// Set window position.
   Future<void> setWindowPosition(Offset offset) async {
     await _storage.saveDouble('windowPositionDx', offset.dx);
     await _storage.saveDouble('windowPositionDy', offset.dy);
