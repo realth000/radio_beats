@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/radio_model.dart';
 import '../../../provider/player_provider.dart';
+import '../../../provider/radio_list_provider.dart';
 import '../../../provider/settings_provider.dart';
 
 class RadioView extends ConsumerStatefulWidget {
@@ -32,26 +33,6 @@ class _RadioViewState extends ConsumerState<RadioView> {
         width: 10,
         height: 10,
       );
-
-  List<RadioModel> _buildDefaultRadioList(String str) {
-    final modelList = <RadioModel>[];
-    str.split('\n').forEach((s) {
-      final ss = s.split('|');
-      if (ss.length != 6) {
-        return;
-      }
-      modelList.add(
-        RadioModel(
-          ss[1],
-          ss[0],
-          style: ss[2],
-          language: ss[3],
-          sampleRate: int.parse(ss[4]),
-        ),
-      );
-    });
-    return modelList;
-  }
 
   ListTile _buildAudioListTile(RadioModel radioModel, WidgetRef ref) {
     final player = ref.watch(playerProvider);
@@ -112,10 +93,7 @@ class _RadioViewState extends ConsumerState<RadioView> {
   }
 
   Future<Widget> _buildRadioList(BuildContext context, WidgetRef ref) async {
-    final defaultRadioLists = _buildDefaultRadioList(
-      await DefaultAssetBundle.of(context)
-          .loadString('assets/default_radio.txt'),
-    );
+    final defaultRadioLists = ref.read(radioListProvider);
     return ListView.builder(
       controller: _radioListScrollController,
       itemCount: defaultRadioLists.length,

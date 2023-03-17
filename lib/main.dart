@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'provider/player_provider.dart';
+import 'provider/radio_list_provider.dart';
 import 'provider/settings_provider.dart';
 import 'router/router.dart';
 import 'themes/app_theme.dart';
@@ -11,6 +12,7 @@ import 'utils/platform.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initSettings();
+  await initRadioModelList();
   if (isDesktop) {
     await _initWindow();
   }

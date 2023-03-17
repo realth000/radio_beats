@@ -92,6 +92,8 @@ class _PlayerNotifier extends StateNotifier<Player> {
     print('AAAA player service stop!');
     await state._player.stop();
   }
+
+  void setDefaultRadio(RadioModel) {}
 }
 
 /// Global provider os [Player].

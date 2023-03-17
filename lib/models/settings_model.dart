@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'radio_model.dart';
+
 part 'settings_model.freezed.dart';
 
 /// Settings model for app, also used in storage.
@@ -14,6 +16,7 @@ class Settings with _$Settings {
     required double windowPositionDx,
     required double windowPositionDy,
     required bool windowInCenter,
+    required RadioModel? defaultModel,
   }) = _Settings;
 }
 
@@ -26,4 +29,5 @@ const Map<String, Type> settingsMap = <String, Type>{
   'windowPositionDx': double,
   'windowPositionDy': double,
   'windowInCenter': bool,
+  'defaultModel': String, // From [RadioModel]
 };

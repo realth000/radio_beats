@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/radio_model.dart';
 import '../models/settings_model.dart';
 
 late final _SettingsService _storage;
@@ -87,6 +89,17 @@ class _SettingsService {
   }
 }
 
+extension _RadioBeatsSettings on _SettingsService {
+  /// Get default [RadioModel] to get.
+  RadioModel? getRadioModel(String key) {
+    final m = _storage.getString(key);
+    if (m == null) {
+      return null;
+    }
+    return RadioModel.fromJson(jsonDecode(m));
+  }
+}
+
 /// Notifier for settings.
 class SettingsNotifier extends StateNotifier<Settings> {
   /// Constructor.
@@ -106,6 +119,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
                 _defaultWindowPositionDy,
             windowInCenter:
                 _storage.getBool('windowInCenter') ?? _defaultWindowInCenter,
+            defaultModel: _storage.getRadioModel('defaultModel'),
           ),
         );
 
@@ -149,6 +163,24 @@ class SettingsNotifier extends StateNotifier<Settings> {
     state = state.copyWith(
       windowPositionDx: offset.dx,
       windowPositionDy: offset.dy,
+    );
+  }
+
+  /// Set window whether in center.
+  ///
+  /// If true, override window position configs.
+  Future<void> setWindowInCenter(bool value) async {
+    await _storage.saveBool('windowInCenter', value);
+    state = state.copyWith(
+      windowInCenter: value,
+    );
+  }
+
+  /// Set default [RadioModel] to use after start.
+  Future<void> setDefaultModel(RadioModel model) async {
+    await _storage.saveString('defaultModel', jsonEncode(model.toJson()));
+    state = state.copyWith(
+      defaultModel: model,
     );
   }
 }
