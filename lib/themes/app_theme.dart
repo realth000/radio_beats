@@ -6,7 +6,7 @@ class AppTheme {
   static final light = FlexThemeData.light(
     scheme: FlexScheme.purpleBrown,
     surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-    blendLevel: 20,
+    // blendLevel: 20,
     tabBarStyle: FlexTabBarStyle.forBackground,
     tooltipsMatchBackground: true,
     subThemesData: const FlexSubThemesData(
@@ -49,7 +49,7 @@ class AppTheme {
   static final dark = FlexThemeData.dark(
     scheme: FlexScheme.purpleBrown,
     surfaceMode: FlexSurfaceMode.highScaffoldLevelSurface,
-    blendLevel: 19,
+    // blendLevel: 19,
     appBarOpacity: 0.98,
     tabBarStyle: FlexTabBarStyle.forBackground,
     tooltipsMatchBackground: true,

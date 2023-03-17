@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/radio_model.dart';
 import '../../../provider/radio_list_provider.dart';
 import '../../../provider/settings_provider.dart';
+import '../../../utils/card_container.dart';
 import '../../../utils/platform.dart';
 
 class SettingsView extends ConsumerStatefulWidget {
@@ -21,7 +22,10 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
 
     Widget buildDefaultModelWidget(BuildContext context, WidgetRef ref) =>
         ListTile(
-          title: Text('Default radio'),
+          title: const Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text('Default radio'),
+          ),
           trailing: SizedBox(
             width: 200,
             child: DropdownButton<RadioModel>(
@@ -60,13 +64,17 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildDefaultModelWidget(context, ref),
+                CardContainer(
+                  children: [
+                    buildDefaultModelWidget(context, ref),
+                  ],
+                ),
                 if (isDesktop)
-                  Card(
-                    child: Column(
-                      children: [
-                        SwitchListTile(
-                          title: const Text('Window in center'),
+                  CardContainer(
+                    children: [
+                      ListTile(
+                        title: const Text('Window in center'),
+                        trailing: Switch(
                           value: ref.watch(settingsProvider).windowInCenter,
                           onChanged: (v) async {
                             await ref
@@ -74,8 +82,8 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
                                 .setWindowInCenter(v);
                           },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
               ],
             ),
