@@ -120,6 +120,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
             windowInCenter:
                 _storage.getBool('windowInCenter') ?? _defaultWindowInCenter,
             defaultModel: _storage.getRadioModel('defaultModel'),
+            playWhenStart:
+                _storage.getBool('playWhenStart') ?? _defaultPlayWhenStart,
           ),
         );
 
@@ -130,6 +132,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
   static const _defaultWindowWidth = 600.0;
   static const _defaultWindowHeight = 480.0;
   static const _defaultWindowInCenter = false;
+  static const _defaultPlayWhenStart = false;
 
   /// Set volume value, not less than zero.
   Future<void> setVolume(double volume) async {
@@ -181,6 +184,14 @@ class SettingsNotifier extends StateNotifier<Settings> {
     await _storage.saveString('defaultModel', jsonEncode(model.toJson()));
     state = state.copyWith(
       defaultModel: model,
+    );
+  }
+
+  /// Set whether auto play after app start.
+  Future<void> setPlayWhenStart(bool play) async {
+    await _storage.saveBool('playWhenStart', play);
+    state = state.copyWith(
+      playWhenStart: play,
     );
   }
 }

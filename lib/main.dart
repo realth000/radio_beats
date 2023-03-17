@@ -20,6 +20,10 @@ void main() async {
   if (isAndroid) {
     await initAudioBackgroundService();
   }
+
+  await initPlayWhenStart();
+
+  // Set default [RadioModel] and play (if set).
   runApp(const RadioBeatsApp());
 }
 

@@ -17,6 +17,7 @@ class Settings with _$Settings {
     required double windowPositionDy,
     required bool windowInCenter,
     required RadioModel? defaultModel,
+    required bool playWhenStart,
   }) = _Settings;
 }
 
@@ -30,4 +31,5 @@ const Map<String, Type> settingsMap = <String, Type>{
   'windowPositionDy': double,
   'windowInCenter': bool,
   'defaultModel': String, // From [RadioModel]
+  'playWhenStart': bool,
 };

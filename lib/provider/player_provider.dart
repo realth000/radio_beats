@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/radio_model.dart';
 import '../utils/platform.dart';
 import 'player_background_provider.dart';
+import 'settings_provider.dart';
 
 late final RBAudioHandler _audioHandler;
 
@@ -18,6 +19,18 @@ Future<void> initAudioBackgroundService() async {
       androidNotificationChannelName: 'Music playback',
     ),
   );
+}
+
+/// Init player.
+Future<void> initPlayWhenStart() async {
+  final pc = ProviderContainer();
+  final model = pc.read(settingsProvider).defaultModel;
+  if (model == null) {
+    return;
+  }
+  if (pc.read(settingsProvider).playWhenStart) {
+    await pc.read(playerProvider.notifier).play(null);
+  }
 }
 
 /// Music player class.
@@ -67,12 +80,17 @@ class _PlayerNotifier extends StateNotifier<Player> {
     await state._player.setVolume(volume);
   }
 
-  Future<void> play(RadioModel radioModel) async {
+  Future<void> play(RadioModel? radioModel) async {
+    if (radioModel == null && state.currentRadio == null) {
+      return;
+    }
     if (state._player.state == PlayerState.playing) {
       await state._player.stop();
     }
-    state.currentRadio = radioModel;
-    await state._player.play(UrlSource(radioModel.url));
+    if (radioModel != null) {
+      state.currentRadio = radioModel;
+    }
+    await state._player.play(UrlSource(radioModel!.url));
     if (isAndroid) {
       print('AAAA set playMediaItem');
       await _audioHandler.playMediaItem(
