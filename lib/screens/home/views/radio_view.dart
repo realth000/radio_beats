@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../../models/radio_model.dart';
-import '../../../provider/player_provider.dart';
-import '../../../provider/radio_list_provider.dart';
-import '../../../provider/settings_provider.dart';
+import 'package:radio_beats/models/radio_model.dart';
+import 'package:radio_beats/providers/player_provider.dart';
+import 'package:radio_beats/providers/radio_list_provider.dart';
+import 'package:radio_beats/providers/settings_provider.dart';
 
 class RadioView extends ConsumerStatefulWidget {
   /// Constructor.

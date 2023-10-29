@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
-
-import '../screens/home/home_screen.dart';
+import 'package:radio_beats/screens/home/home_screen.dart';
 
 final _homeRoute = GoRoute(
   path: '/',

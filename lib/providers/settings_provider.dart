@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:radio_beats/models/radio_model.dart';
+import 'package:radio_beats/models/settings_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/radio_model.dart';
-import '../models/settings_model.dart';
 
 late final _SettingsService _storage;
 
@@ -21,6 +20,7 @@ Future<void> initSettings() async {
 
 class _SettingsService {
   late final SharedPreferences _sp;
+
   Future<_SettingsService> init() async {
     _sp = await SharedPreferences.getInstance();
     return this;

@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../models/radio_model.dart';
+import 'package:radio_beats/models/radio_model.dart';
 
 /// Global radio list provider.
 final radioListProvider = StateProvider((ref) => _radioList);

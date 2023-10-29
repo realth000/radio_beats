@@ -1,5 +1,6 @@
 *.g.dart
 *.freezed.dart
+/lib/generated/
 
 # Miscellaneous
 *.class

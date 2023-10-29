@@ -1,8 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:radio_beats/models/radio_model.dart';
 
-import 'radio_model.dart';
-
-part 'settings_model.freezed.dart';
+part '../generated/models/settings_model.freezed.dart';
 
 /// Settings model for app, also used in storage.
 @freezed

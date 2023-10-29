@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'radio_model.freezed.dart';
-part 'radio_model.g.dart';
+part '../generated/models/radio_model.freezed.dart';
+part '../generated/models/radio_model.g.dart';
 
 /// RadioModel contains a radio target.
 ///

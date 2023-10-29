@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../provider/homepage_provider.dart';
+import 'package:radio_beats/providers/homepage_provider.dart';
 
 /// RadioBeats navigation bar.
 /// May be difference when on desktop and mobile, now is the same.

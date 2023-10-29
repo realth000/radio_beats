@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:radio_beats/components/navigation_bar/rb_navigation_bar.dart';
+import 'package:radio_beats/providers/homepage_provider.dart';
+import 'package:radio_beats/providers/settings_provider.dart';
+import 'package:radio_beats/screens/home/views/radio_view.dart';
 import 'package:radio_beats/screens/home/views/settings_view.dart';
+import 'package:radio_beats/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
-
-import '../../components/navigation_bar/rb_navigation_bar.dart';
-import '../../provider/homepage_provider.dart';
-import '../../provider/settings_provider.dart';
-import '../../utils/platform.dart';
-import 'views/radio_view.dart';
 
 /// Home screen page.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -20,6 +19,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> with WindowListener {
   final _settings = ProviderContainer();
+
   @override
   void initState() {
     super.initState();
