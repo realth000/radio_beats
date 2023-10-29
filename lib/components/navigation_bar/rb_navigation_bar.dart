@@ -10,19 +10,27 @@ class RBNavigationBar extends ConsumerWidget {
 
   /// Navigation bar destinations.
   /// May be difference when on desktop and mobile, now is the same.
-  static const _dest = <BottomNavigationBarItem>[
-    BottomNavigationBarItem(icon: Icon(Icons.radio), label: 'Radio'),
-    BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+  static const _dest = <NavigationDestination>[
+    NavigationDestination(
+      icon: Icon(Icons.radio_outlined),
+      label: 'Radio',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.favorite_outline),
+      label: 'Favorite',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.settings_outlined),
+      label: 'Settings',
+    ),
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Consumer(
-        builder: (context, ref, _) => BottomNavigationBar(
-          items: _dest,
-          currentIndex: ref.watch(homepageIndexProvider),
-          onTap: (i) {
-            ref.read(homepageIndexProvider.notifier).state = i;
-          },
-        ),
+  Widget build(BuildContext context, WidgetRef ref) => NavigationBar(
+        destinations: _dest,
+        selectedIndex: ref.watch(homepageIndexProvider),
+        onDestinationSelected: (i) {
+          ref.read(homepageIndexProvider.notifier).state = i;
+        },
       );
 }

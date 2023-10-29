@@ -5,7 +5,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   audio_service: ^0.18.12
@@ -21,7 +21,6 @@ dependencies:
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
   surf_lint_rules: ^3.0.0
-  window_manager: ^0.3.7
 
 dev_dependencies:
   build_runner: ^2.4.6

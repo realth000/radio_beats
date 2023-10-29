@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:radio_beats/models/radio_model.dart';
 import 'package:radio_beats/models/settings_model.dart';
@@ -96,7 +98,7 @@ extension _RadioBeatsSettings on _SettingsService {
     if (m == null) {
       return null;
     }
-    return RadioModel.fromJson(jsonDecode(m));
+    return RadioModel.fromJson(jsonDecode(m) as Map<String, Object?>);
   }
 }
 
@@ -122,6 +124,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
             defaultModel: _storage.getRadioModel('defaultModel'),
             playWhenStart:
                 _storage.getBool('playWhenStart') ?? _defaultPlayWhenStart,
+            favoriteRadioList: _storage.getStringList('favoriteRadioList') ??
+                _defaultFavoriteRadioList,
           ),
         );
 
@@ -133,6 +137,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
   static const _defaultWindowHeight = 480.0;
   static const _defaultWindowInCenter = false;
   static const _defaultPlayWhenStart = false;
+  static const _defaultFavoriteRadioList = <String>[];
 
   /// Set volume value, not less than zero.
   Future<void> setVolume(double volume) async {
@@ -147,6 +152,26 @@ class SettingsNotifier extends StateNotifier<Settings> {
     }
     state = state.copyWith(lastNotZeroVolume: volume);
     await _storage.saveDouble('lastNotZeroVolume', volume);
+  }
+
+  Future<void> addFavoriteRadio(RadioModel radioModel) async {
+    final list = [...state.favoriteRadioList];
+    if (list.firstWhereOrNull((e) => e == radioModel.name) != null) {
+      return;
+    }
+    list.add(radioModel.name);
+    state = state.copyWith(favoriteRadioList: list);
+    await _storage.saveStringList('favoriteRadioList', list);
+  }
+
+  Future<void> removeFavoriteRadio(RadioModel radioModel) async {
+    final list = [...state.favoriteRadioList];
+    if (list.firstWhereOrNull((e) => e == radioModel.name) == null) {
+      return;
+    }
+    list.remove(radioModel.name);
+    state = state.copyWith(favoriteRadioList: list);
+    await _storage.saveStringList('favoriteRadioList', list);
   }
 
   /// Set window size, greater than zero.
