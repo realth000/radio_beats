@@ -89,7 +89,9 @@ class _PlayerNotifier extends StateNotifier<Player> {
     if (radioModel != null) {
       state.currentRadio = radioModel;
     }
-    await state._player.play(UrlSource(radioModel!.url));
+    final source = UrlSource(radioModel!.url);
+    await source.setOnPlayer(state._player);
+    await state._player.resume();
     if (isAndroid) {
       await _audioHandler.playMediaItem(
         MediaItem(
